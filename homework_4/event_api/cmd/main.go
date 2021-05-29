@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"code-cadets-2021/homework_4/bets_api/cmd/bootstrap"
-	"code-cadets-2021/homework_4/bets_api/cmd/config"
-	"code-cadets-2021/homework_4/bets_api/internal/tasks"
+	"code-cadets-2021/homework_4/event_api/cmd/bootstrap"
+	"code-cadets-2021/homework_4/event_api/cmd/config"
+	"code-cadets-2021/homework_4/event_api/internal/tasks"
 )
 
 func main() {

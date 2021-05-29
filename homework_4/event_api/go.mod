@@ -1,4 +1,4 @@
-module code-cadets-2021/homework_4/bets_api
+module code-cadets-2021/homework_4/event_api
 
 go 1.14
 

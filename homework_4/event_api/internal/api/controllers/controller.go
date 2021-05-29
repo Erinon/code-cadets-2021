@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 
-	"code-cadets-2021/homework_4/bets_api/internal/api/controllers/models"
+	"code-cadets-2021/homework_4/event_api/internal/api/controllers/models"
 )
 
 // Controller implements handlers for web server requests.

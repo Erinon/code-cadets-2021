@@ -6,7 +6,7 @@ import (
 
 	"github.com/streadway/amqp"
 
-	"code-cadets-2021/homework_4/bets_api/internal/infrastructure/rabbitmq/models"
+	"code-cadets-2021/homework_4/event_api/internal/infrastructure/rabbitmq/models"
 )
 
 const contentTypeTextPlain = "text/plain"

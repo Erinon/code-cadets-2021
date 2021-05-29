@@ -3,12 +3,12 @@ package bootstrap
 import (
 	"github.com/streadway/amqp"
 
-	"code-cadets-2021/homework_4/bets_api/cmd/config"
-	"code-cadets-2021/homework_4/bets_api/internal/api"
-	"code-cadets-2021/homework_4/bets_api/internal/api/controllers"
-	"code-cadets-2021/homework_4/bets_api/internal/api/controllers/validators"
-	"code-cadets-2021/homework_4/bets_api/internal/domain/services"
-	"code-cadets-2021/homework_4/bets_api/internal/infrastructure/rabbitmq"
+	"code-cadets-2021/homework_4/event_api/cmd/config"
+	"code-cadets-2021/homework_4/event_api/internal/api"
+	"code-cadets-2021/homework_4/event_api/internal/api/controllers"
+	"code-cadets-2021/homework_4/event_api/internal/api/controllers/validators"
+	"code-cadets-2021/homework_4/event_api/internal/domain/services"
+	"code-cadets-2021/homework_4/event_api/internal/infrastructure/rabbitmq"
 )
 
 func newEventUpdateValidator() *validators.EventUpdateValidator {
