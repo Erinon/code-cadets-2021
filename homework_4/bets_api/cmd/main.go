@@ -13,9 +13,9 @@ func main() {
 
 	config.Load()
 
-	rabbitMqChannel := bootstrap.RabbitMq()
+	db := bootstrap.Sqlite()
 	signalHandler := bootstrap.SignalHandler()
-	api := bootstrap.Api(rabbitMqChannel)
+	api := bootstrap.Api(db)
 
 	log.Println("Bootstrap finished. Event API is starting")
 

@@ -1,44 +1,51 @@
 package bootstrap
 
 import (
-	"github.com/streadway/amqp"
-
 	"code-cadets-2021/homework_4/bets_api/cmd/config"
 	"code-cadets-2021/homework_4/bets_api/internal/api"
 	"code-cadets-2021/homework_4/bets_api/internal/api/controllers"
+	dtomappers "code-cadets-2021/homework_4/bets_api/internal/api/controllers/mappers"
 	"code-cadets-2021/homework_4/bets_api/internal/api/controllers/validators"
+	dbmappers "code-cadets-2021/homework_4/bets_api/internal/domain/mappers"
 	"code-cadets-2021/homework_4/bets_api/internal/domain/services"
-	"code-cadets-2021/homework_4/bets_api/internal/infrastructure/rabbitmq"
+	"code-cadets-2021/homework_4/bets_api/internal/infrastructure/sqlite"
 )
 
-func newEventUpdateValidator() *validators.EventUpdateValidator {
-	return validators.NewEventUpdateValidator()
+func newBetStatusValidator() *validators.BetStatusValidator {
+	return validators.NewBetStatusValidator()
 }
 
-func newEventUpdatePublisher(publisher rabbitmq.QueuePublisher) *rabbitmq.EventUpdatePublisher {
-	return rabbitmq.NewEventUpdatePublisher(
-		config.Cfg.Rabbit.PublisherExchange,
-		config.Cfg.Rabbit.PublisherEventUpdateQueueQueue,
-		config.Cfg.Rabbit.PublisherMandatory,
-		config.Cfg.Rabbit.PublisherImmediate,
-		publisher,
-	)
+func newDbBetMapper() *dbmappers.BetMapper {
+	return dbmappers.NewBetMapper()
 }
 
-func newEventService(publisher services.EventUpdatePublisher) *services.EventService {
-	return services.NewEventService(publisher)
+func newBetRepository(dbExecutor sqlite.DatabaseExecutor, betMapper sqlite.BetMapper) *sqlite.BetRepository {
+	return sqlite.NewBetRepository(dbExecutor, betMapper)
 }
 
-func newController(eventUpdateValidator controllers.EventUpdateValidator, eventService controllers.EventService) *controllers.Controller {
-	return controllers.NewController(eventUpdateValidator, eventService)
+func newBetService(repository services.BetRepository) *services.BetService {
+	return services.NewBetService(repository)
+}
+
+func newBetDtoMapper() *dtomappers.BetMapper {
+	return dtomappers.NewBetMapper()
+}
+
+func newController(betStatusValidator controllers.BetStatusValidator, betService controllers.BetService, betMapper controllers.BetMapper) *controllers.Controller {
+	return controllers.NewController(betStatusValidator, betService, betMapper)
 }
 
 // Api bootstraps the http server.
-func Api(rabbitMqChannel *amqp.Channel) *api.WebServer {
-	eventUpdateValidator := newEventUpdateValidator()
-	eventUpdatePublisher := newEventUpdatePublisher(rabbitMqChannel)
-	eventService := newEventService(eventUpdatePublisher)
-	controller := newController(eventUpdateValidator, eventService)
+func Api(dbExecutor sqlite.DatabaseExecutor) *api.WebServer {
+	dbBetMapper := newDbBetMapper()
+	betRepository := newBetRepository(dbExecutor, dbBetMapper)
+
+	betService := newBetService(betRepository)
+
+	betStatusValidator := newBetStatusValidator()
+
+	betDtoMapper := newBetDtoMapper()
+	controller := newController(betStatusValidator, betService, betDtoMapper)
 
 	return api.NewServer(config.Cfg.Api.Port, config.Cfg.Api.ReadWriteTimeoutMs, controller)
 }
