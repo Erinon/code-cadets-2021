@@ -24,12 +24,8 @@ func New(betRepository BetRepository) *Handler {
 func (h *Handler) HandleBets(
 	ctx context.Context,
 	bets <-chan rabbitmqmodels.Bet,
-) <-chan rabbitmqmodels.BetCalculated {
-	resultingBets := make(chan rabbitmqmodels.BetCalculated)
-
+) {
 	go func() {
-		defer close(resultingBets)
-
 		for bet := range bets {
 			log.Println("Processing bet, betId:", bet.Id)
 
@@ -49,8 +45,6 @@ func (h *Handler) HandleBets(
 			}
 		}
 	}()
-
-	return resultingBets
 }
 
 // HandleEventUpdates handles event updates.
