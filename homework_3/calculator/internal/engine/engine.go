@@ -5,8 +5,8 @@ import (
 	"log"
 )
 
-// Engine is the main component, responsible for consuming received bets and calculated bets,
-// processing them and publishing the resulting bets.
+// Engine is the main component, responsible for consuming bets and event updates,
+// processing them and publishing the calculated bets.
 type Engine struct {
 	consumer  Consumer
 	handler   Handler
