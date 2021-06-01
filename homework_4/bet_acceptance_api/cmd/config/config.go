@@ -1,8 +1,6 @@
 package config
 
-import (
-	"github.com/kelseyhightower/envconfig"
-)
+import "github.com/kelseyhightower/envconfig"
 
 // Cfg is the single instance of configuration that gets automatically populated from the
 // environment variables once the  module loads.
@@ -10,8 +8,24 @@ var Cfg Config
 
 // Config contains all the configuration needed for service to work.
 type Config struct {
-	SqliteDatabase string    `split_words:"true"`
+	Rabbit         rabbitConfig `split_words:"true"`
 	Api    		   apiConfig `split_words:"true"`
+}
+
+type rabbitConfig struct {
+	PublisherBetReceivedQueue  string `split_words:"true" required:"true"`
+	PublisherBetReceivedName   string `split_words:"true" default:"received"`
+	PublisherDeclareDurable    bool   `split_words:"true" default:"true"`
+	PublisherDeclareAutoDelete bool   `split_words:"true" default:"false"`
+	PublisherDeclareExclusive  bool   `split_words:"true" default:"false"`
+	PublisherDeclareNoWait     bool   `split_words:"true" default:"false"`
+	PublisherExchange          string `split_words:"true" default:""`
+	PublisherMandatory         bool   `split_words:"true" default:"false"`
+	PublisherImmediate         bool   `split_words:"true" default:"false"`
+	DeclareDurable             bool   `split_words:"true" default:"true"`
+	DeclareAutoDelete          bool   `split_words:"true" default:"false"`
+	DeclareExclusive           bool   `split_words:"true" default:"false"`
+	DeclareNoWait              bool   `split_words:"true" default:"false"`
 }
 
 type apiConfig struct {
