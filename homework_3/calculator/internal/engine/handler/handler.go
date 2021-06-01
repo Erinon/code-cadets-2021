@@ -80,7 +80,7 @@ func (h *Handler) HandleEventUpdates(
 			for _, domainBet := range domainBets {
 				// Calculate the resulting bet, which should be published.
 				resultingBet := rabbitmqmodels.BetCalculated{
-					Id:     domainBet.Id,
+					Id: domainBet.Id,
 				}
 
 				if eventUpdate.Outcome == "won" {

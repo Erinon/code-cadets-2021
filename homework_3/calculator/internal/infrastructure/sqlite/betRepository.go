@@ -53,7 +53,7 @@ func (r *BetRepository) GetBetsBySelectionID(ctx context.Context, id string) ([]
 		return []domainmodels.Bet{}, false, nil
 	}
 	if err != nil {
-		return []domainmodels.Bet{}, false, errors.Wrap(err, "bet repository failed to get bets with id " + id)
+		return []domainmodels.Bet{}, false, errors.Wrap(err, "bet repository failed to get bets with id "+id)
 	}
 
 	var bets []domainmodels.Bet

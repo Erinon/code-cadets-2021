@@ -8,14 +8,14 @@ import (
 
 // Consumer offers methods for consuming from input queues.
 type Consumer struct {
-	betConsumer   BetConsumer
+	betConsumer         BetConsumer
 	eventUpdateConsumer EventUpdateConsumer
 }
 
 // New creates and returns a new Consumer.
 func New(betConsumer BetConsumer, eventUpdateConsumer EventUpdateConsumer) *Consumer {
 	return &Consumer{
-		betConsumer:   betConsumer,
+		betConsumer:         betConsumer,
 		eventUpdateConsumer: eventUpdateConsumer,
 	}
 }
