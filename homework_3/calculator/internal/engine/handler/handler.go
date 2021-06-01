@@ -61,12 +61,12 @@ func (h *Handler) HandleEventUpdates(
 			log.Println("Processing event update, betId:", eventUpdate.Id)
 
 			// Fetch the domain bet.
-			domainBets, exists, err := h.betRepository.GetBetsBySelectionID(ctx, eventUpdate.Id)
+			domainBets, err := h.betRepository.GetBetsBySelectionID(ctx, eventUpdate.Id)
 			if err != nil {
 				log.Println("Failed to fetch bets which should be updated, error: ", err)
 				continue
 			}
-			if !exists {
+			if len(domainBets) == 0 {
 				log.Println("Bets which should be updated do not exist, selectionId: ", eventUpdate.Id)
 				continue
 			}

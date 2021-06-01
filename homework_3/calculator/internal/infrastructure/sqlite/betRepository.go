@@ -47,13 +47,13 @@ func (r *BetRepository) queryInsertBet(ctx context.Context, bet storagemodels.Be
 }
 
 // GetBetsBySelectionID fetches bets from the database and returns them.
-func (r *BetRepository) GetBetsBySelectionID(ctx context.Context, id string) ([]domainmodels.Bet, bool, error) {
+func (r *BetRepository) GetBetsBySelectionID(ctx context.Context, id string) ([]domainmodels.Bet, error) {
 	storageBets, err := r.queryGetBetsBySelectionID(ctx, id)
 	if err == sql.ErrNoRows {
-		return []domainmodels.Bet{}, false, nil
+		return []domainmodels.Bet{}, nil
 	}
 	if err != nil {
-		return []domainmodels.Bet{}, false, errors.Wrap(err, "bet repository failed to get bets with id "+id)
+		return []domainmodels.Bet{}, errors.Wrap(err, "bet repository failed to get bets with id "+id)
 	}
 
 	var bets []domainmodels.Bet
@@ -62,7 +62,7 @@ func (r *BetRepository) GetBetsBySelectionID(ctx context.Context, id string) ([]
 		bets = append(bets, r.betMapper.MapStorageBetToDomainBet(storageBet))
 	}
 
-	return bets, true, nil
+	return bets, nil
 }
 
 func (r *BetRepository) queryGetBetsBySelectionID(ctx context.Context, id string) ([]storagemodels.Bet, error) {
