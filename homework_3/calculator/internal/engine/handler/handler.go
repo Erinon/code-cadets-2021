@@ -29,6 +29,12 @@ func (h *Handler) HandleBets(
 		for bet := range bets {
 			log.Println("Processing bet, betId:", bet.Id)
 
+			exists, err := h.betRepository.ExistsBet(ctx, bet.Id)
+			if err != nil {
+				log.Println("Failed to check existence of bet, error: ", err)
+				continue
+			}
+
 			// Calculate the domain bet based on the incoming bet.
 			domainBet := domainmodels.Bet{
 				Id:                   bet.Id,
@@ -37,11 +43,20 @@ func (h *Handler) HandleBets(
 				Payment:              bet.Payment,
 			}
 
-			// Insert the domain bet into the repository.
-			err := h.betRepository.InsertBet(ctx, domainBet)
-			if err != nil {
-				log.Println("Failed to insert bet, error: ", err)
-				continue
+			if exists {
+				// Update bet in the repository.
+				err = h.betRepository.UpdateBet(ctx, domainBet)
+				if err != nil {
+					log.Println("Failed to update bet, error: ", err)
+					continue
+				}
+			} else {
+				// Insert the domain bet into the repository.
+				err = h.betRepository.InsertBet(ctx, domainBet)
+				if err != nil {
+					log.Println("Failed to insert bet, error: ", err)
+					continue
+				}
 			}
 		}
 	}()

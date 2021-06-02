@@ -46,6 +46,61 @@ func (r *BetRepository) queryInsertBet(ctx context.Context, bet storagemodels.Be
 	return err
 }
 
+// ExistsBet checks if bet with specified ID exists in the database. An error is returned if the operation
+// has failed.
+func (r *BetRepository) ExistsBet(ctx context.Context, id string) (bool, error) {
+	exists, err := r.queryExistsBet(ctx, id)
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
+	if err != nil {
+		return false, errors.Wrap(err, "bet repository failed to check existence of bet with id "+id)
+	}
+
+	return exists, nil
+}
+
+func (r *BetRepository) queryExistsBet(ctx context.Context, id string) (bool, error) {
+	row, err := r.dbExecutor.QueryContext(ctx, "SELECT * FROM bets WHERE id='"+id+"';")
+	if err != nil {
+		return false, err
+	}
+	defer row.Close()
+
+	// This will move to the "next" result (which is the only result, because a single bet is fetched).
+	row.Next()
+
+	err = row.Scan(&id)
+	if err != nil {
+		return false, err
+	}
+
+	return true, err
+}
+
+// UpdateBet updates the provided bet in the database. An error is returned if the operation
+// has failed.
+func (r *BetRepository) UpdateBet(ctx context.Context, bet domainmodels.Bet) error {
+	storageBet := r.betMapper.MapDomainBetToStorageBet(bet)
+	err := r.queryUpdateBet(ctx, storageBet)
+	if err != nil {
+		return errors.Wrap(err, "bet repository failed to update a bet with id "+bet.Id)
+	}
+	return nil
+}
+
+func (r *BetRepository) queryUpdateBet(ctx context.Context, bet storagemodels.Bet) error {
+	updateBetSQL := "UPDATE bets SET selection_id=?, selection_coefficient=?, payment=? WHERE id=?"
+
+	statement, err := r.dbExecutor.PrepareContext(ctx, updateBetSQL)
+	if err != nil {
+		return err
+	}
+
+	_, err = statement.ExecContext(ctx, bet.SelectionId, bet.SelectionCoefficient, bet.Payment, bet.Id)
+	return err
+}
+
 // GetBetsBySelectionID fetches bets from the database and returns them.
 func (r *BetRepository) GetBetsBySelectionID(ctx context.Context, id string) ([]domainmodels.Bet, error) {
 	storageBets, err := r.queryGetBetsBySelectionID(ctx, id)
